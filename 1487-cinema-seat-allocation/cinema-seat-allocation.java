@@ -1,43 +1,61 @@
 class Solution {
     public int maxNumberOfFamilies(int n, int[][] reservedSeats) {
 
-        Map<Integer,Integer> map = new HashMap<>();
+        Map<Integer, Set<Integer>> reserved = new HashMap<>();
 
-        int answer=2*n;
+        for (int[] seat : reservedSeats) {
 
-        for(int reservations[]: reservedSeats){
-            int row = reservations[0];
-            int seat = reservations[1];
+            int row = seat[0];
+            int col = seat[1];
 
-            if(seat==1 || seat==10)
-                continue;
+            reserved.putIfAbsent(row, new HashSet<>());
 
-            int bit = 1<<(seat-2);
+            reserved.get(row).add(col);
+        }
 
-            map.put(row, map.getOrDefault(row, 0) | bit);
-        } 
+        int answer = 2 * n;
 
-        for(int mask: map.values()){
-            answer-=2;
-            int left = 0b00001111;
-            int middle = 0b00111100;
-            int right = 0b11110000;
+        for (Map.Entry<Integer, Set<Integer>> entry : reserved.entrySet()) {
 
-            boolean canLeft = (mask & left) == 0;
-            boolean canRight = (mask & right) == 0;
+            Set<Integer> seats = entry.getValue();
 
-            if (canLeft && canRight) {
+            answer -= 2;
+
+            boolean left = true;
+            boolean middle = true;
+            boolean right = true;
+
+            for (int i = 2; i <= 5; i++) {
+                if (seats.contains(i)) {
+                    left = false;
+                    break;
+                }
+            }
+
+            for (int i = 4; i <= 7; i++) {
+                if (seats.contains(i)) {
+                    middle = false;
+                    break;
+                }
+            }
+
+            for (int i = 6; i <= 9; i++) {
+                if (seats.contains(i)) {
+                    right = false;
+                    break;
+                }
+            }
+
+            if (left && right) {
                 answer += 2;
             }
 
-            else if (canLeft
-                    || (mask & middle) == 0
-                    || canRight) {
-
+            else if (left || middle || right) {
                 answer += 1;
             }
+
         }
         return answer;
-        
     }
 }
+        
