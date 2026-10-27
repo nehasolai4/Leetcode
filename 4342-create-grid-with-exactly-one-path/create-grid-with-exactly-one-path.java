@@ -20,12 +20,7 @@ class Solution {
         String result[] = new String[m];
 
         for(int i=0;i<m;i++){
-            String row="";
-            for(int j=0;j<n;j++){
-                row+=mat[i][j];
-            }
-
-            result[i]=row;
+            result[i]=new String(mat[i]);
         }
 
         return result;
